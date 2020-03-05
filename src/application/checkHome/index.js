@@ -1,18 +1,16 @@
 import React,{useState,useEffect} from 'react'
-import { Top ,Tab ,TabItem} from './styles';
+import { Top} from './styles';
 import LoadingSelf from '../../ui/loading'
 import { renderRoutes } from "react-router-config";
 import { NavLink } from 'react-router-dom';
 import httpPost from '../../api/fetch'
 import * as dd from 'dingtalk-jsapi'
 import {setStorage,clearStorage} from '../../api/storage'
-import {Toast, Icon} from 'antd-mobile'
-
+import {Toast, WingBlank ,Grid ,Card} from 'antd-mobile'
 function Login(props){
         const {route}=props
         const [redirect,setRedirect]=useState(false)
-        
-        useEffect(()=>{
+         useEffect(()=>{
             clearStorage()
             navigator.userAgent.toLowerCase().indexOf('dingtalk') > -1 ?
                   dd.ready(()=>{
@@ -24,6 +22,7 @@ function Login(props){
                                 url:'checkinfo/ssoDingLogin',
                                 data:{code:code},   
                                 success: res=>{ 
+                                  console.log('登录成功')
                                   setStorage('userId',res.data.userid)
                                   setStorage('pk_psndoc',res.data.pk_psndoc)
                                   setStorage('sessionId',res.data.sessionId)
@@ -33,7 +32,6 @@ function Login(props){
                                },
                             error:error => Toast.fail('登录异常:'+error, 1) }
                             )
-                             
                              }
                          });
                }) :
@@ -41,6 +39,7 @@ function Login(props){
                 url:'checkinfo/ssoDingLogin',
                 data:{code:'118543'},   
                 success: res=>{ 
+                  console.log('登录成功')
                   setStorage('userId',res.data.userid)
                   setStorage('pk_psndoc',res.data.pk_psndoc)
                   setStorage('sessionId',res.data.sessionId)
@@ -52,22 +51,20 @@ function Login(props){
             )
                  
          },[redirect])
- 
-        return (
-            <div>
-                <Top>
-                    <span className="iconfont home">{''}</span>{/*&#xe616;*/}
-                    <span className="title" style={{textAlign:'center'}}>Sunon</span>
-                    <span className="iconfont search" onClick={() => props.history.push('/search')}><Icon type='search' color='#ffffff'/></span>
-                </Top> 
-                <Tab>
-                    <NavLink to="/unclaimed" activeClassName="selected"><TabItem><span>未认领</span></TabItem></NavLink>
-                    <NavLink to="/claimed" activeClassName="selected"><TabItem><span>已认领</span></TabItem></NavLink>
-                    <NavLink to="/cert" activeClassName="selected"><TabItem><span>我的合同</span></TabItem></NavLink>
-                </Tab>
-            {  redirect ?  renderRoutes (route.routes)  : <LoadingSelf memo='正在登录'/>}
-            </div> 
-        ) 
-}
   
+        return (
+            <div >
+                <Top>
+                    <span className="iconfont home"  >{' '}</span>{/*&#xe616;*/}
+                    <span className="title" style={{textAlign:'center'}}>Sunon</span>
+                    <span className="iconfont search" onClick={() => props.history.push('/search')}>{' '}</span>{/*<Icon type='search' color='#ffffff'/>*/}
+                </Top> 
+                 
+                
+
+                {  redirect ?  renderRoutes (route.routes)  : <LoadingSelf memo='正在登录'/>}
+            </div> 
+        )
+}
+ 
 export default Login

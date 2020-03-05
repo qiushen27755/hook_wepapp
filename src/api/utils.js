@@ -1,5 +1,5 @@
 
-export  const baseUrl = " http://172.16.101.219:8081/";
+export  const baseUrl = " http://172.16.59.62:8081/";
 
 
 export const debounce = (func, delay) => {
@@ -14,3 +14,4 @@ export const debounce = (func, delay) => {
       }, delay);
     }
   }
+   

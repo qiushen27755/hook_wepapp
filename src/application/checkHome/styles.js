@@ -5,7 +5,7 @@ export const Top = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 5px 10px;
+  padding: 0px 10px;
   background: ${style["theme-color"]};
   &>span {
     line-height: 30px;
