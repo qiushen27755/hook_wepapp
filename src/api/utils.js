@@ -1,6 +1,6 @@
 
-export  const baseUrl = " http://172.16.101.219:8081/";
-
+// export  const baseUrl = " http://172.16.101.219:8081/";
+export  const baseUrl = " http://172.16.59.62:8081/";
 
 export const debounce = (func, delay) => {
     let timer;
@@ -13,4 +13,8 @@ export const debounce = (func, delay) => {
         clearTimeout(timer);
       }, delay);
     }
+  }
+  export const dateToLocalString=(time)=>{
+    var unixTimestamp = new Date(time) ;
+    return unixTimestamp.getFullYear() + "-" + (unixTimestamp.getMonth() + 1) + "-" + unixTimestamp.getDate()
   }

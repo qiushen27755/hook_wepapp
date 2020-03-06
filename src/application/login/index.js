@@ -39,7 +39,7 @@ function Login(props){
                }) :
                httpPost({
                 url:'checkinfo/ssoDingLogin',
-                data:{code:'118543'},   
+                data:{code:'111582'},   
                 success: res=>{ 
                   setStorage('userId',res.data.userid)
                   setStorage('pk_psndoc',res.data.pk_psndoc)
@@ -62,8 +62,8 @@ function Login(props){
                 </Top> 
                 <Tab>
                     <NavLink to="/unclaimed" activeClassName="selected"><TabItem><span>未认领</span></TabItem></NavLink>
+                    <NavLink to="/claiming" activeClassName="selected"><TabItem><span>部分认领</span></TabItem></NavLink>
                     <NavLink to="/claimed" activeClassName="selected"><TabItem><span>已认领</span></TabItem></NavLink>
-                    <NavLink to="/cert" activeClassName="selected"><TabItem><span>我的合同</span></TabItem></NavLink>
                 </Tab>
             {  redirect ?  renderRoutes (route.routes)  : <LoadingSelf memo='正在登录'/>}
             </div> 

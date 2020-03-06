@@ -5,11 +5,13 @@ import SearchBox from '../../ui/search-box'
 import {Toast, List} from 'antd-mobile'
 import httpPost from '../../api/fetch'
 import Scroll from '../../ui/scroll'
+import {dateToLocalString} from '../../api/utils'
+import {getStorage} from '../../api/storage'
 function Search (props) {
   // 控制动画
   const [show, setShow] = useState (false);
   const [query, setQuery] = useState ('');
-  const [payment,setPayment] =useState([]); //数据
+  const [data,setData] =useState([]); //数据
       useEffect (() => {
         setShow (true);
       }, []);
@@ -17,13 +19,16 @@ function Search (props) {
       useEffect(()=>{
         if(!query) return
         httpPost({
-          url:'checkSever/search',
-          data:{msg:query},
+          // 搜索 解决时间戳的问题
+          url:'checkSever/search/self',
+          data:{msg:query,code:getStorage('userCode')},
+          // 数据库搜索 无法检索时间戳
+          // url:'checkSever/search',
+          // data:{msg:query,code:getStorage('userCode')},
           success: res=>{ 
-    
-            setPayment(JSON.parse(JSON.stringify(res.payment)))
-            console.log(res.payment)
-           },
+            setData(JSON.parse(JSON.stringify(res.data)))
+            console.log(res.data)
+            },
           error:error => Toast.fail('登录异常:'+error, 1) 
         })
       },[query])
@@ -34,7 +39,7 @@ function Search (props) {
       }, []);
       // 传递组件事件
       const handleQuery = (q) => {
-           setPayment([]);
+          setData([]);
            setQuery (q);
        }
       
@@ -54,14 +59,14 @@ function Search (props) {
             <Scroll>
                   <List renderHeader={()=> !query?null:<span>收支单</span> }>
                       {
-                        payment?payment.map((i)=>
+                        data?data.map((i)=>
                         <List.Item key={i.pk_pay} multipleLine wrap arrow="horizontal" onClick={()=>props.history.push (`/claimedInfo/${i.pk_pay}/${i.status}`)}>
-                                <span>{i.propertype}</span><span style={{float:"right"}}>{i.pk_pay}</span>
+                                <span>{i.type}</span><span style={{float:"right"}}>{i.pk_pay}</span>
                                 <br />
-                                {i.cust_name} <span style={{float:'right'}}>{i.memo}</span>  
+                                {i.cust_name} <span style={{float:'right'}}>{i.status}</span>  
                                 <br />
-                                <List.Item.Brief>{i.pay_time}
-                                <span style={{float:'right',color:'red'}}>￥{i.pay_money}</span> 
+                                <List.Item.Brief>{dateToLocalString(i.time)}
+                                <span style={{float:'right',color:'green'}}>￥{i.money}</span> 
                                 </List.Item.Brief>
                             </List.Item> 
                         ):null

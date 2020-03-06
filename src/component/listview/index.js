@@ -1,8 +1,9 @@
 import React,{useState,useEffect,useRef} from 'react'
-import {ListView,PullToRefresh,Icon ,Toast} from 'antd-mobile'
+import { ListView, PullToRefresh , Icon ,Toast } from 'antd-mobile'
 import httpPost from '../../api/fetch'
 import RenderRow from './rowmap'
 import { renderRoutes } from 'react-router-config';
+import {getStorage} from '../../api/storage'
 
 const offset=10
 function separator(id){
@@ -23,39 +24,49 @@ function OrderListView(props){
     const [upLoading,setUpLoading]=useState(false) //上拉
     const [data,setData]=useState([]) // 后台response
     const [list,setList]=useState([]) // 响应的实体数据集合
-    const [height,setHeight]=useState(0)
+    const [height,setHeight]=useState(0) //自定义容器高度
+    const [isNull,setIsNull]=useState(false) //数据为空时  默认false
 
     useEffect(()=>{
         const hei = document.documentElement.clientHeight - vl.current.offsetTop;
-        const data={"code":"111936",
-        "offset":offset,
-        "index":effect,
-        "state":state}
+        const data={"code":getStorage('userCode'),
+                    "offset":offset,
+                    "index":effect,
+                    "state":state}
         httpPost({
             url:'checkSever/payList',
             data:data,   
             success: res=>{
                 const data=JSON.parse(JSON.stringify(res))
-                console.log(res)
-                if(effect===0){
+                 if(effect===0){
+                  if(data.message === '100' ){
+                    setIsNull(true)
+                    console.log('无数据')
+                    return
+                  }
+                  setIsNull(false)
                   setList(data.data)
                   setData(data)
                   setHeight(hei)
                   setDataSource(dataSource.cloneWithRows(data.data))
                   setUpLoading(false)
                   setPullLoading(false)
+                  console.log('有数据01')
+                  console.log(data.data)
                 }else{
                   const lis=list.concat(data.data)
+                  setIsNull(false)
                   setList(data.data)
                   setData(data)
                   setHeight(hei)
                   setDataSource(dataSource.cloneWithRows(lis))
                   setUpLoading(false)
                   setPullLoading(false)
+                  console.log('有数据02')
                 }
          },
             error : error => {
-                Toast.fail('Load failed'+error, 1) ;console.log(error) 
+                Toast.fail('Load failed'+error, 1) ; 
               }
         })
      // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,44 +75,47 @@ function OrderListView(props){
         history.push (`/claimedInfo/${pk_pay}/${state}`)
      }
       return(
-      <div  ref={vl} >
-        <ListView 
-        dataSource={dataSource}
-        initialListSize={offset}
-        renderSeparator={(sectionID, rowID)=>separator(sectionID+rowID)} //渲染了 view之间的小间隙
-        pageSize={list.length}  //每次循环事件 渲染的行数
-        renderRow={(rowData, id, i) =>  <RenderRow enterDetail={enterDetail}  item={rowData} id={i}></RenderRow>}// 通过参数 方法对 一行进行单独渲染
-        style={{
-         height: height,
-         overflow: 'auto',
-        }}
-        renderBodyComponent={() => <MyBody />}
-        renderFooter={() => (   
+        
+        <div  ref={vl} >
+          {
+            isNull ? <p style={{display:'flex',justifyContent:'center',color:'grey'}}>- 没有更多了 -</p> :
+          <ListView 
+          dataSource={dataSource}
+          initialListSize={offset}
+          renderSeparator={(sectionID, rowID)=>separator(sectionID+rowID)} //渲染了 view之间的小间隙
+          pageSize={list.length}  //每次循环事件 渲染的行数
+          renderRow={(rowData, id, i) =>  <RenderRow enterDetail={enterDetail}  item={rowData} id={i}></RenderRow>}// 通过参数 方法对 一行进行单独渲染
+          style={{
+            height: height,
+            overflow: 'auto',
+          }}
+          renderBodyComponent={() => <MyBody />}
+          renderFooter={() => (   
             <div style={{ padding: 30, textAlign: 'center' }}>
-              <div>
+            <div>
                 {pullLoading ?<Icon type="loading"/> :
                 data.pageNum+1===data.pageTotal ? <div>-没有更多了-</div> : <div>-{data.pageNum+1}-</div> }
               </div>
             </div>
-          )}
-        onEndReachedThreshold={100}
-        scrollRenderAheadDistance={500}
-        onEndReached={()=>{  setPullLoading(data.pageNum+1===data.pageTotal?false:true) 
-                             setEffect(data.pageNum+1===data.pageTotal?effect:data.pageNum+1)}}
-          pullToRefresh={ <PullToRefresh  
-          refreshing={upLoading}
-          onRefresh={()=>{setUpLoading(true) 
-                          
-                          setEffect(0)} }
-          /> 
-        }
-    />
-      { renderRoutes(route.routes) }
-     </div>
+            )}
+            onEndReachedThreshold={100}
+            scrollRenderAheadDistance={500}
+            onEndReached={()=>{  setPullLoading(data.pageNum+1===data.pageTotal?false:true) 
+              setEffect(data.pageNum+1===data.pageTotal?effect:data.pageNum+1)}}
+              pullToRefresh={ <PullToRefresh  
+                refreshing={upLoading}
+                onRefresh={()=>{setUpLoading(true) 
+                  
+                  setEffect(0)} }
+                  /> 
+                }
+                />
+              }
+              { renderRoutes(route.routes) }
+                </div>
     )
 }
 function MyBody(props) {
-  // console.log('进入myBody')
     return (
       <div className="am-list-body my-body">
         <span style={{ display: 'none' }}>自定义的body换行元素</span>

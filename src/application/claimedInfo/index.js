@@ -5,9 +5,13 @@ import httpPost from '../../api/fetch'
 import ListInfo from '../../component/infolist'
   
 function ClaimedInfo(props){
-    const pk_pay=props.match.params.id
-    const state=props.match.params.state
-     const [data,setData]=useState([])
+  const [payment,setPayment]=useState([])
+  const [cert,setCert]= useState([])
+  
+  const pk_pay=props.match.params.id
+  const state=props.match.params.state
+
+
     const info=useRef();
     useEffect(()=>{
           httpPost({
@@ -17,18 +21,17 @@ function ClaimedInfo(props){
               "status":state
             },
             success:res=>{
-                const list=JSON.parse(JSON.stringify(res.data))
-                  setData(list)
-                  console.log({
-                    "pk_pay":pk_pay,
-                    "status":state
-                  })
+                console.log(res)
+                const payment=JSON.parse(JSON.stringify(res.payment))
+                const cert=JSON.parse(JSON.stringify(res.cert))
+                setPayment(payment)
+                setCert(cert)
             },
             error:error => Toast.fail('Load failed'+error, 1)})
      },[pk_pay,state])
     return(
             <div ref={info}    >
-                      <ListInfo data={data}/>
+                      <ListInfo payment={payment} cert={cert}/>
             </div>
           )
 }
