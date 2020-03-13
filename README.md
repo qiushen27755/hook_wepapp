@@ -25,12 +25,12 @@
   
 ### 目录
 
-├── api        //通信及工具
-└── application //组件路由的页面入口
-├── assets  //资源
-├── component        // 封装的组件 主要都在这
-├── router       //路由
-├── ui      //一些第三方插件和自定义组件有些没用上没删
-├── App.js // 入口文件
-├── index.js  // 启动文件
-├── style.js     //全局样式
+    ├── api        //通信及工具
+    └── application //组件路由的页面入口
+    ├── assets  //资源
+    ├── component        // 封装的组件 主要都在这
+    ├── router       //路由
+    ├── ui      //一些第三方插件和自定义组件有些没用上没删
+    ├── App.js // 入口文件
+    ├── index.js  // 启动文件   
+    ├── style.js     //全局样式
