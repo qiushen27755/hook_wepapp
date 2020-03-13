@@ -16,5 +16,6 @@ export const debounce = (func, delay) => {
   }
   export const dateToLocalString=(time)=>{
     var unixTimestamp = new Date(time) ;
-    return unixTimestamp.getFullYear() + "-" + (unixTimestamp.getMonth() + 1) + "-" + unixTimestamp.getDate()
+    return unixTimestamp.getFullYear() + "-" + ((unixTimestamp.getMonth() + 1)<10?'0'+(unixTimestamp.getMonth() + 1):(unixTimestamp.getMonth() + 1)) + "-" 
+    + (unixTimestamp.getDate()<10?'0'+unixTimestamp.getDate():unixTimestamp.getDate())
   }

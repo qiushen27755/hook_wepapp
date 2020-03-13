@@ -60,7 +60,8 @@ function Search (props) {
                   <List renderHeader={()=> !query?null:<span>收支单</span> }>
                       {
                         data?data.map((i)=>
-                        <List.Item key={i.pk_pay} multipleLine wrap arrow="horizontal" onClick={()=>props.history.push (`/claimedInfo/${i.pk_pay}/${i.status}`)}>
+                        <List.Item key={i.pk_pay} multipleLine wrap arrow="horizontal" 
+                        onClick={()=>props.history.push (`/claimedInfo/${i.pk_pay}/${i.status==='未认领'?0:i.status==='部份认领'?1:i.status==='完全认领'?2:null}`)}>
                                 <span>{i.type}</span><span style={{float:"right"}}>{i.pk_pay}</span>
                                 <br />
                                 {i.cust_name} <span style={{float:'right'}}>{i.status}</span>  
